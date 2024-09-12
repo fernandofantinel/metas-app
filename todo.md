@@ -1,4 +1,4 @@
-- Criar metas
+- [x] Criar metas
 - Listar metas
   - Metas realizadas
   - Metas abertas
