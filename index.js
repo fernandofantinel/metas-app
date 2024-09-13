@@ -22,6 +22,11 @@ const cadastrarMeta = async () => {
 }
 
 const listarMetas = async () => {
+  if (metas.length === 0) {
+    console.log("Nenhuma meta cadastrada.")
+    return
+  }
+
   const respostas = await checkbox({
     message: "",
     choices: [...metas],
