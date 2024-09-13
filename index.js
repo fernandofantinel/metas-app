@@ -1,13 +1,22 @@
 const { select, input, checkbox, } = require('@inquirer/prompts')
+const fs = require("fs").promises
 
 let mensagem = "Bem-vindo(a) ao app Metas!"
 
-let meta = {
-  value: "Beber 3L de água",
-  checked: false
+let metas
+
+const carregarMetas = async () => {
+  try {
+    const dados = await fs.readFile("metas.json", "utf-8")
+    metas = JSON.parse(dados)
+  } catch (erro) {
+    metas = []
+  }
 }
 
-let metas = [meta]
+const salvarMetas = async () => {
+  await fs.writeFile("metas.json", JSON.stringify(metas, null, 2))
+}
 
 const cadastrarMeta = async () => {
   const titulo = await input({ message: "Digite o título da meta:" })
@@ -58,6 +67,11 @@ const listarMetas = async () => {
 }
 
 const metasRealizadas = async () => {
+  if (metas.length === 0) {
+    mensagem = "Nenhuma meta cadastrada."
+    return
+  }
+
   const realizadas = metas.filter(meta => {
     return meta.checked
   })
@@ -74,6 +88,11 @@ const metasRealizadas = async () => {
 }
 
 const metasAbertas = async () => {
+  if (metas.length === 0) {
+    mensagem = "Nenhuma meta cadastrada."
+    return
+  }
+
   const abertas = metas.filter(meta => {
     return !meta.checked
   })
@@ -90,6 +109,11 @@ const metasAbertas = async () => {
 }
 
 const removerMetas = async () => {
+  if (metas.length === 0) {
+    mensagem = "Nenhuma meta cadastrada."
+    return
+  }
+
   const metasDesmarcadas = metas.map(meta => {
     return {
       value: meta.value,
@@ -127,7 +151,10 @@ const mostrarMensagem = () => {
 }
 
 const start = async () => {
+  await carregarMetas()
+
   while (true) {
+    await salvarMetas()
     mostrarMensagem()
 
     const opcao = await select({
