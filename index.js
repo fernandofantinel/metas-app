@@ -80,6 +80,33 @@ const metasAbertas = async () => {
   })
 }
 
+const removerMetas = async () => {
+  const metasDesmarcadas = metas.map(meta => {
+    return {
+      value: meta.value,
+      checked: false
+    }
+  })
+
+  const itensARemover = await checkbox({
+    message: "Selecione uma meta para ser removida",
+    choices: [...metasDesmarcadas]
+  })
+
+  if (itensARemover.length === 0) {
+    console.log("Nenhuma meta a ser removida.")
+    return
+  }
+
+  itensARemover.forEach(item => {
+    metas = metas.filter(meta => {
+      return meta.value !== item
+    })
+  })
+
+  console.log("Meta(s) removida(s) com sucesso.")
+}
+
 const start = async () => {
   while (true) {
     const opcao = await select({
@@ -102,6 +129,10 @@ const start = async () => {
           value: "abertas"
         },
         {
+          name: "Remover metas",
+          value: "remover"
+        },
+        {
           name: "Sair",
           value: "sair"
         }
@@ -121,6 +152,9 @@ const start = async () => {
         break;
       case "abertas":
         await metasAbertas()
+        break;
+      case "remover":
+        await removerMetas()
         break;
       case "sair":
         console.log("Até mais!")
